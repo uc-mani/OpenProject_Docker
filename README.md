@@ -8,10 +8,10 @@ This guide sets up **OpenProject locally on your machine** using Docker Compose,
 
 ## Prerequisites
 
-Install:
+Install: (follow the instructions on the links below)
 
-- **Docker Desktop** (Windows/macOS) or **Docker Engine** (Linux)
-- **Docker Compose v2** (usually included as `docker compose`)
+- **Docker Desktop** (Windows/macOS) or **Docker Engine** (Linux) (https://docs.docker.com/get-started/get-docker/)
+- **Docker Compose v2** (usually included as `docker compose`) (https://www.openproject.org/docs/installation-and-operations/installation/docker-compose/)
 - **Git** (optional but recommended)
 
 Verify:
@@ -28,21 +28,17 @@ docker compose version
 ### 1) Get the Compose project
 
 ```bash
-git clone https://github.com/opf/openproject-docker-compose
-cd openproject-docker-compose
+git clone https://github.com/opf/openproject-docker-compose.git --depth=1 --branch=stable/16 openproject
 ```
 
-(Optional) Checkout a stable branch (example):
-
-```bash
-git checkout stable/16
-```
-
-> If you skip this, you’ll use the repo’s default branch.
+> You will get the stable/16 bracnh.
 
 ---
 
 ### 2) Create your environment file
+```
+cd openproject
+```
 
 ```bash
 cp .env.example .env
@@ -63,6 +59,22 @@ PORT=127.0.0.1:8080
 
 > If `PORT` is left as `127.0.0.1:8080`, other machines **cannot** access it (this is what we want for a local-only setup).
 
+**(sample .env file)**
+```env
+TAG=16-slim
+OPENPROJECT_HTTPS=false
+OPENPROJECT_HOST__NAME=localhost:8080
+PORT=127.0.0.1:8080
+OPENPROJECT_RAILS__RELATIVE__URL__ROOT=
+IMAP_ENABLED=false
+POSTGRES_PASSWORD=SomeStrongPasswordHere
+DATABASE_URL=postgres://postgres:SomeStrongPasswordHere@db/openproject?pool=20&encoding=unicode&reconnect=true
+RAILS_MIN_THREADS=4
+RAILS_MAX_THREADS=16
+PGDATA=pgdata
+OPDATA=opdata
+```
+
 ---
 
 ### 3) Create persistent data folders (on the host)
@@ -81,10 +93,39 @@ New-Item -ItemType Directory -Force -Path .\pgdata,.\assets | Out-Null
 
 ---
 
+### 3.5) Create the hostname mapping (Windows)
+
+**(local-only)**: map to 127.0.0.1:
+
+- Open Notepad as Administrator and Open file:
+```
+C:\Windows\System32\drivers\etc\hosts
+```
+- Add this line:
+```
+127.0.0.1  localhost
+```
+- Save
+
+- Flush DNS:
+```powershell
+ipconfig /flushdns
+```
+- Test:
+```powershell
+ping localhost
+```
+
+---
+
 ### 4) Start OpenProject
 
 ```bash
 docker compose up -d
+
+or
+
+docker compose up -d --build --pull always
 ```
 
 Check containers:
@@ -108,6 +149,8 @@ Go to:
 - **http://localhost:8080**
 
 On first launch, OpenProject may take a minute while it initializes the database and assets.
+
+- login with 'admin' and password.
 
 ---
 
@@ -182,7 +225,7 @@ For localhost testing, you can skip SMTP. For professional use (LAN/production),
 
 ---
 
-## Next step (when you’re ready)
+## Next step
 If you want teammates to access OpenProject from their PCs, you’ll move from **localhost** to a **LAN deployment** with:
 - static IP / DNS name
 - firewall rules
