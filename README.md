@@ -80,13 +80,16 @@ OPDATA=opdata
 ### 3) Create persistent data folders (on the host)
 
 From the project directory:
+```
+cd openproject
+```
 
 **Linux/macOS (bash):**
 ```bash
 mkdir -p ./pgdata ./assets
 ```
 
-**Windows PowerShell:**
+**Windows PowerShell:(run as administrator)**
 ```powershell
 New-Item -ItemType Directory -Force -Path .\pgdata,.\assets | Out-Null
 ```
