@@ -79,6 +79,26 @@ OPDATA=opdata
 
 ### 3) Create persistent data folders (on the host)
 
+In the sample .env we are using 
+```env
+PGDATA=pgdata
+OPDATA=opdata
+```
+Docker treats them as named volumes and Docker will store data inside Docker’s volume storage instead:
+
+- volume named pgdata
+- volume named opdata
+
+**Alternate Option**:
+
+To use local directory
+
+So set .env to bind-mount those directories by using relative paths:
+```env
+PGDATA=./pgdata
+OPDATA=./assets
+```
+
 From the project directory:
 ```
 cd openproject
@@ -93,7 +113,6 @@ mkdir -p ./pgdata ./assets
 ```powershell
 New-Item -ItemType Directory -Force -Path .\pgdata,.\assets | Out-Null
 ```
-
 ---
 
 ### 3.5) Create the hostname mapping (Windows)
